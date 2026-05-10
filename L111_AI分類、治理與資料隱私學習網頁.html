@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPAS AI應用規劃師｜AI治理・資料隱私・AI分類</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — Academic Manuscript / Warm Scholarly
+   Three Subjects: Privacy(Teal), AI-Def(Amber), Governance(Crimson)
+   ═══════════════════════════════════════════ */
+:root {
+  /* Parchment base */
+  --parch: #f7f3eb;
+  --parch2: #efe9dc;
+  --parch3: #e5ddd0;
+  --ink: #1c1810;
+  --ink2: #2e2a22;
+  --ink3: #5a5448;
+  --ink4: #8a8278;
+  --rule: #c8bfaf;
+  --rule2: #ddd6ca;
+
+  /* Subject colours */
+  --priv: #1a5f5a;      /* Privacy — deep teal */
+  --priv2: #2a8a82;
+  --priv-bg: rgba(26,95,90,0.08);
+  --priv-border: rgba(26,95,90,0.25);
+
+  --aidef: #7c4a00;     /* AI Definition — amber brown */
+  --aidef2: #b06a00;
+  --aidef-bg: rgba(124,74,0,0.08);
+  --aidef-border: rgba(124,74,0,0.25);
+
+  --gov: #6b1a2a;       /* Governance — crimson */
+  --gov2: #9e2a3e;
+  --gov-bg: rgba(107,26,42,0.08);
+  --gov-border: rgba(107,26,42,0.25);
+
+  --serif: 'Playfair Display', 'Noto Serif TC', serif;
+  --sans: 'Noto Sans TC', sans-serif;
+  --mono: 'Courier Prime', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--parch);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.8;
+  position: relative;
+}
+
+/* Subtle paper texture */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.025) 27px, rgba(0,0,0,0.025) 28px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ════════════════════
+   LAYOUT
+   ════════════════════ */
+.shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ════════════════════
+   SIDEBAR
+   ════════════════════ */
+.sidebar {
+  background: var(--ink2);
+  color: var(--parch2);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: #3e3a32 transparent;
+}
+
+.sb-top {
+  padding: 28px 22px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sb-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #9a9286;
+  margin-bottom: 10px;
+  display: block;
+}
+.sb-logo {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--parch);
+  line-height: 1.25;
+}
+.sb-logo em {
+  font-style: italic;
+  font-size: 13px;
+  color: #9a9286;
+  display: block;
+  font-family: var(--mono);
+  margin-top: 4px;
+}
+
+/* Progress */
+.sb-prog {
+  padding: 14px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.prog-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 10px;
+  color: #6a6660;
+  font-family: var(--mono);
+}
+.prog-track {
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--priv2), var(--aidef2), var(--gov2));
+  border-radius: 1px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* Nav groups */
+.nav-grp { padding: 10px 0 4px; }
+.nav-grp-lbl {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 0 22px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-grp-lbl::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+}
+.nav-grp-lbl.teal { color: var(--priv2); }
+.nav-grp-lbl.amber { color: var(--aidef2); }
+.nav-grp-lbl.crimson { color: var(--gov2); }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 22px;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: #7a7570;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+.nav-item:hover { color: var(--parch2); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--parch); }
+.nav-item.done { color: #5a5a50; }
+.nav-item.done::after { content: '✓'; margin-left: auto; font-size: 10px; color: #4a7a60; }
+
+.nav-item.active.teal { border-left-color: var(--priv2); background: rgba(42,138,130,0.1); }
+.nav-item.active.amber { border-left-color: var(--aidef2); background: rgba(176,106,0,0.1); }
+.nav-item.active.crimson { border-left-color: var(--gov2); background: rgba(158,42,62,0.1); }
+
+.nav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.nav-item.done .nav-dot { background: #3a6a50; }
+.nav-item.active.teal .nav-dot { background: var(--priv2); box-shadow: 0 0 5px var(--priv2); }
+.nav-item.active.amber .nav-dot { background: var(--aidef2); box-shadow: 0 0 5px var(--aidef2); }
+.nav-item.active.crimson .nav-dot { background: var(--gov2); box-shadow: 0 0 5px var(--gov2); }
+
+.nav-num {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #4a4840;
+  min-width: 18px;
+}
+.nav-item.active .nav-num { color: #9a9286; }
+
+/* ════════════════════
+   MAIN CONTENT
+   ════════════════════ */
+main {
+  overflow-y: auto;
+  height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.chapter {
+  display: none;
+  padding: 60px 70px 90px;
+  max-width: 900px;
+  animation: pageIn 0.35s ease;
+}
+.chapter.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Chapter header ── */
+.ch-header {
+  margin-bottom: 50px;
+  position: relative;
+  padding-bottom: 28px;
+}
+.ch-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--subject-color, var(--ink3)), transparent 70%);
+}
+.ch-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.7;
+}
+.ch-eyebrow .e-bar {
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  border-radius: 1px;
+}
+.ch-title {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+.ch-desc {
+  font-size: 14.5px;
+  color: var(--ink3);
+  line-height: 1.85;
+  max-width: 580px;
+  margin-bottom: 18px;
+}
+.tag-wrap { display: flex; gap: 7px; flex-wrap: wrap; }
+.kw-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid;
+  letter-spacing: 0.5px;
+}
+
+/* ── Section ── */
+.section { margin-bottom: 42px; }
+.sec-h {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.sec-h-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  opacity: 0.4;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.prose {
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: var(--ink2);
+  margin-bottom: 16px;
+}
+.prose strong { font-weight: 700; }
+.prose em { font-style: italic; color: var(--ink3); }
+.prose .hl { font-weight: 700; border-bottom: 2px solid; }
+
+/* ── Tables ── */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 16px 0;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.tbl th {
+  padding: 11px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  font-family: var(--mono);
+  border-bottom: 2px solid var(--rule);
+}
+.tbl td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--rule2);
+  vertical-align: top;
+  line-height: 1.65;
+  color: var(--ink2);
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(0,0,0,0.02); }
+.tbl td strong { color: var(--ink); }
+.tbl th.priv-h { background: var(--priv-bg); color: var(--priv); }
+.tbl th.aidef-h { background: var(--aidef-bg); color: var(--aidef); }
+.tbl th.gov-h { background: var(--gov-bg); color: var(--gov); }
+
+/* ── Callout boxes ── */
+.box {
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-left: 4px solid;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.box.teal { background: var(--priv-bg); border-color: var(--priv); }
+.box.amber { background: var(--aidef-bg); border-color: var(--aidef); }
+.box.crimson { background: var(--gov-bg); border-color: var(--gov); }
+.box.warn {
+  background: rgba(160,100,0,0.08);
+  border-color: #b06a00;
+}
+.box.neutral {
+  background: rgba(0,0,0,0.04);
+  border-color: var(--rule);
+}
+.box-head {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.box.teal .box-head { color: var(--priv); }
+.box.amber .box-head { color: var(--aidef); }
+.box.crimson .box-head { color: var(--gov); }
+.box.warn .box-head { color: #7c4a00; }
+.box p, .box div, .box li { color: var(--ink2); }
+
+/* ── Definition cards ── */
+.def-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.def-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 18px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.def-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.def-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.def-card-icon { font-size: 24px; margin-bottom: 10px; }
+.def-card-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.def-card-body { font-size: 12.5px; color: var(--ink3); line-height: 1.6; }
+
+/* ── Comparison two-col ── */
+.vs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 16px 0;
+}
+.vs-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 18px;
+}
+.vs-card-head {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vs-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Bullet list ── */
+.bul { list-style: none; margin: 10px 0; }
+.bul li {
+  padding: 5px 0 5px 20px;
+  position: relative;
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+.bul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  font-family: var(--serif);
+  opacity: 0.4;
+}
+.bul li strong { color: var(--ink); }
+
+/* ── Steps ── */
+.steps { counter-reset: step; list-style: none; margin: 14px 0; }
+.steps li {
+  counter-increment: step;
+  padding: 12px 16px 12px 52px;
+  position: relative;
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.65;
+  border-left: 1px solid var(--rule);
+  margin-left: 18px;
+  margin-bottom: 2px;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: -18px; top: 10px;
+  width: 30px; height: 30px;
+  background: var(--parch3);
+  border: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink3);
+}
+.steps li strong { color: var(--ink); }
+
+/* ── Hierarchy visual ── */
+.hier-wrap {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 22px;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+.hier-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 16px;
+}
+.hier-tree { display: flex; flex-direction: column; gap: 4px; }
+.hier-row { display: flex; align-items: center; gap: 8px; }
+.hier-indent { width: 24px; flex-shrink: 0; }
+.hier-line { width: 20px; height: 2px; flex-shrink: 0; }
+.hier-node {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.hier-sub {
+  font-size: 11px;
+  color: var(--ink4);
+  font-family: var(--mono);
+}
+
+/* ── Principle cards (governance) ── */
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.principle-card {
+  background: #fff;
+  border: 1px solid var(--gov-border);
+  border-radius: 8px;
+  padding: 18px;
+  position: relative;
+}
+.principle-card::after {
+  content: attr(data-num);
+  position: absolute;
+  top: 12px; right: 14px;
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 900;
+  color: rgba(107,26,42,0.07);
+  line-height: 1;
+}
+.pc-icon { font-size: 22px; margin-bottom: 10px; }
+.pc-title { font-family: var(--serif); font-size: 15px; font-weight: 700; color: var(--gov); margin-bottom: 8px; }
+.pc-body { font-size: 12.5px; color: var(--ink3); line-height: 1.65; }
+
+/* ── Law timeline ── */
+.timeline { margin: 16px 0; }
+.tl-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 0;
+  position: relative;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: 52px;
+  top: 32px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--rule);
+}
+.tl-item:last-child::before { display: none; }
+.tl-year {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 46px;
+  padding-top: 10px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.tl-dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.tl-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid;
+  background: var(--parch);
+  margin-top: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.tl-content {
+  padding: 8px 0 22px;
+  flex: 1;
+}
+.tl-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.tl-body { font-size: 12.5px; color: var(--ink3); line-height: 1.65; }
+
+/* ── AI Type visual ── */
+.ai-spectrum {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 16px 0;
+}
+.spectrum-bar {
+  display: flex;
+  height: 36px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0 8px;
+}
+.spec-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.spec-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink4);
+}
+
+/* ── QUIZ ── */
+.quiz-wrap {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 28px;
+  margin-top: 44px;
+  position: relative;
+}
+.quiz-wrap::before {
+  content: 'PRACTICE QUESTIONS';
+  position: absolute;
+  top: -1px; left: 24px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border-radius: 0 0 4px 4px;
+  background: var(--subject-color, var(--ink3));
+  color: var(--parch);
+}
+.quiz-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--ink);
+}
+.qblock {
+  margin-bottom: 26px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--rule2);
+}
+.qblock:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.q-text {
+  font-size: 14.5px;
+  font-weight: 600;
+  margin-bottom: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  display: flex;
+  gap: 10px;
+}
+.q-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  height: fit-content;
+}
+.q-opts { display: flex; flex-direction: column; gap: 7px; }
+.q-opt {
+  padding: 10px 14px;
+  border: 1.5px solid var(--rule);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--ink2);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: all 0.15s;
+  background: var(--parch);
+  user-select: none;
+}
+.q-opt:hover { border-color: var(--ink3); background: var(--parch2); }
+.q-opt.correct { border-color: var(--priv); background: var(--priv-bg); color: var(--ink); }
+.q-opt.wrong   { border-color: var(--gov); background: var(--gov-bg); }
+.q-opt.disabled { cursor: default; }
+.q-opt .opt-l { font-family: var(--mono); font-size: 11px; color: var(--ink4); flex-shrink: 0; margin-top: 1px; min-width: 16px; }
+.q-opt.correct .opt-l { color: var(--priv); font-weight: 700; }
+.q-opt.wrong .opt-l { color: var(--gov); }
+.q-exp {
+  margin-top: 10px;
+  padding: 11px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.75;
+  display: none;
+  color: var(--ink2);
+}
+.q-exp.ok { background: var(--priv-bg); border: 1px solid var(--priv-border); display: none; }
+.q-exp.ng { background: var(--gov-bg); border: 1px solid var(--gov-border); display: none; }
+.q-exp.show { display: block; }
+.q-exp strong { color: var(--ink); }
+
+/* ── Chapter nav ── */
+.ch-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 56px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule2);
+}
+.btn {
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1.5px solid;
+  font-family: var(--sans);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-outline { background: transparent; color: var(--ink3); border-color: var(--rule); }
+.btn-outline:hover { border-color: var(--ink3); color: var(--ink); }
+.btn-teal { background: var(--priv); color: #fff; border-color: var(--priv); }
+.btn-teal:hover { background: var(--priv2); }
+.btn-amber { background: var(--aidef); color: #fff; border-color: var(--aidef); }
+.btn-amber:hover { background: var(--aidef2); }
+.btn-crimson { background: var(--gov); color: #fff; border-color: var(--gov); }
+.btn-crimson:hover { background: var(--gov2); }
+
+/* ══════════════════════════════
+   COVER PAGE
+   ══════════════════════════════ */
+.cover {
+  display: none;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 70px;
+  position: relative;
+  overflow: hidden;
+  max-width: none;
+}
+.cover.active { display: flex; }
+
+.cover-bg-text {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--serif);
+  font-size: 320px;
+  font-weight: 900;
+  color: rgba(0,0,0,0.025);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  font-style: italic;
+}
+.cover-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink3);
+  margin-bottom: 28px;
+  background: rgba(255,255,255,0.5);
+}
+.cover-chip::before { content: '●'; font-size: 6px; color: var(--priv2); }
+.cover-h1 {
+  font-family: var(--serif);
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 22px;
+  color: var(--ink);
+}
+.cover-h1 .t-teal { color: var(--priv); }
+.cover-h1 .t-amber { color: var(--aidef); }
+.cover-h1 .t-crimson { color: var(--gov); }
+.cover-sub {
+  font-size: 15.5px;
+  color: var(--ink3);
+  max-width: 540px;
+  line-height: 1.8;
+  margin-bottom: 38px;
+}
+.cover-divider {
+  width: 48px;
+  height: 3px;
+  background: var(--ink2);
+  margin-bottom: 36px;
+  border-radius: 2px;
+}
+.cover-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 660px;
+  margin-bottom: 44px;
+}
+.cover-topic {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 18px;
+  background: rgba(255,255,255,0.6);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cover-topic:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); background: #fff; }
+.cover-topic::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 8px 8px 0 0;
+}
+.cover-topic.t1::before { background: var(--priv); }
+.cover-topic.t2::before { background: var(--aidef); }
+.cover-topic.t3::before { background: var(--gov); }
+.ct-icon { font-size: 26px; margin-bottom: 8px; }
+.ct-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cover-topic.t1 .ct-label { color: var(--priv2); }
+.cover-topic.t2 .ct-label { color: var(--aidef2); }
+.cover-topic.t3 .ct-label { color: var(--gov2); }
+.ct-title { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); }
+.ct-count { font-family: var(--mono); font-size: 10px; color: var(--ink4); margin-top: 4px; }
+.cover-stats { display: flex; gap: 32px; }
+.cstat { }
+.cstat-n { font-family: var(--serif); font-size: 30px; font-weight: 700; color: var(--ink); }
+.cstat-n span { font-size: 16px; color: var(--ink4); }
+.cstat-l { font-family: var(--mono); font-size: 10px; color: var(--ink4); letter-spacing: 1px; }
+
+/* ── divider rule ── */
+hr.rule-line {
+  border: none;
+  border-top: 1px solid var(--rule2);
+  margin: 32px 0;
+}
+
+/* Sub-header h3 */
+.sub-h {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sub-h::before {
+  content: '§';
+  font-style: italic;
+  opacity: 0.3;
+  font-size: 14px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══════════════════════════════
+     SIDEBAR
+     ══════════════════════════════ -->
+<nav class="sidebar">
+  <div class="sb-top">
+    <span class="sb-tag">IPAS · 115 年度 · 初級</span>
+    <div class="sb-logo">AI 應用<br>規劃師
+      <em>考試準備教材</em>
+    </div>
+  </div>
+  <div class="sb-prog">
+    <div class="prog-row"><span>PROGRESS</span><span id="pctNum">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+
+  <div class="nav-grp">
+    <div class="nav-grp-lbl" style="color:#6a6660;font-family:var(--mono);font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;padding:0 22px;margin-bottom:2px">總覽</div>
+    <div class="nav-item active" data-color="neutral" onclick="gotoChapter(0)" id="nav0">
+      <span class="nav-num">00</span><span class="nav-dot"></span>課程總覽
+    </div>
+  </div>
+
+  <div class="nav-grp">
+    <div class="nav-grp-lbl teal">資料隱私與安全</div>
+    <div class="nav-item teal" onclick="gotoChapter(1)" id="nav1">
+      <span class="nav-num">01</span><span class="nav-dot"></span>核心概念與法規
+    </div>
+    <div class="nav-item teal" onclick="gotoChapter(2)" id="nav2">
+      <span class="nav-num">02</span><span class="nav-dot"></span>隱私強化技術
+    </div>
+    <div class="nav-item teal" onclick="gotoChapter(3)" id="nav3">
+      <span class="nav-num">03</span><span class="nav-dot"></span>資料安全管理
+    </div>
+  </div>
+
+  <div class="nav-grp">
+    <div class="nav-grp-lbl amber">AI 的定義與分類</div>
+    <div class="nav-item amber" onclick="gotoChapter(4)" id="nav4">
+      <span class="nav-num">04</span><span class="nav-dot"></span>AI 定義與發展史
+    </div>
+    <div class="nav-item amber" onclick="gotoChapter(5)" id="nav5">
+      <span class="nav-num">05</span><span class="nav-dot"></span>依能力分類
+    </div>
+    <div class="nav-item amber" onclick="gotoChapter(6)" id="nav6">
+      <span class="nav-num">06</span><span class="nav-dot"></span>依技術分類
+    </div>
+  </div>
+
+  <div class="nav-grp">
+    <div class="nav-grp-lbl crimson">AI 治理概念</div>
+    <div class="nav-item crimson" onclick="gotoChapter(7)" id="nav7">
+      <span class="nav-num">07</span><span class="nav-dot"></span>AI 治理原則
+    </div>
+    <div class="nav-item crimson" onclick="gotoChapter(8)" id="nav8">
+      <span class="nav-num">08</span><span class="nav-dot"></span>國際框架與標準
+    </div>
+    <div class="nav-item crimson" onclick="gotoChapter(9)" id="nav9">
+      <span class="nav-num">09</span><span class="nav-dot"></span>台灣 AI 政策與考試重點
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════
+     MAIN
+     ══════════════════════════════ -->
+<main id="mainScroll">
+
+<!-- ═══════════════════════════
+     CH0 — 封面
+     ═══════════════════════════ -->
+<div class="chapter cover active" id="ch0">
+  <div class="cover-bg-text">AI</div>
+  <div class="cover-chip">IPAS AI 應用規劃師初級認證 · 115 年度</div>
+  <h1 class="cover-h1">
+    <span class="t-teal">資料隱私</span>·<span class="t-amber">AI分類</span><br>
+    與<span class="t-crimson">治理</span>教材
+  </h1>
+  <p class="cover-sub">完整涵蓋「資料隱私與安全」、「AI 的定義與分類」及「AI 治理概念」三大主題，由基礎建立至考試難度，系統性征服 115 年度 IPAS 初級考試。</p>
+  <div class="cover-divider"></div>
+  <div class="cover-grid">
+    <div class="cover-topic t1" onclick="gotoChapter(1)">
+      <div class="ct-icon">🔒</div>
+      <div class="ct-label">PRIVACY & SECURITY</div>
+      <div class="ct-title">資料隱私與安全</div>
+      <div class="ct-count">3 章節 · 法規・技術・管理</div>
+    </div>
+    <div class="cover-topic t2" onclick="gotoChapter(4)">
+      <div class="ct-icon">🤖</div>
+      <div class="ct-label">AI DEFINITION</div>
+      <div class="ct-title">AI 的定義與分類</div>
+      <div class="ct-count">3 章節 · 定義・能力・技術</div>
+    </div>
+    <div class="cover-topic t3" onclick="gotoChapter(7)">
+      <div class="ct-icon">⚖️</div>
+      <div class="ct-label">AI GOVERNANCE</div>
+      <div class="ct-title">AI 治理概念</div>
+      <div class="ct-count">3 章節 · 原則・國際・台灣</div>
+    </div>
+  </div>
+  <div class="cover-stats">
+    <div class="cstat"><div class="cstat-n">9</div><div class="cstat-l">CHAPTERS</div></div>
+    <div class="cstat"><div class="cstat-n">30<span>+</span></div><div class="cstat-l">QUIZ Q&A</div></div>
+    <div class="cstat"><div class="cstat-n">50<span>+</span></div><div class="cstat-l">KEY CONCEPTS</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH1 — 資料隱私核心概念
+     ═══════════════════════════ -->
+<div class="chapter" id="ch1" style="--subject-color:var(--priv)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--priv)">
+      <span class="e-bar" style="background:var(--priv)"></span>資料隱私與安全 · Chapter 01
+    </div>
+    <h2 class="ch-title">核心概念與<br>隱私法規</h2>
+    <p class="ch-desc">理解個人資料的定義、隱私權的法律基礎，以及台灣《個人資料保護法》與國際 GDPR 的核心精神與差異。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">個資法</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">GDPR</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">個人資料定義</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">同意原則</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">1.1</span>個人資料的定義</div>
+    <p class="prose">依台灣《個人資料保護法》（個資法），<strong>個人資料</strong>是指任何足以<strong>直接或間接識別特定自然人</strong>的資訊。</p>
+    <div class="def-grid">
+      <div class="def-card" style="--subject-color:var(--priv)">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--priv);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">👤</div>
+        <div class="def-card-title">一般個人資料</div>
+        <div class="def-card-body">姓名、出生年月日、身分證字號、護照號碼、特徵、指紋、婚姻狀況、家庭、教育、職業、病歷、財務情況、社會活動等</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gov);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">🔴</div>
+        <div class="def-card-title">特種個人資料</div>
+        <div class="def-card-body">病歷、醫療、基因、性生活、健康檢查、犯罪前科等<strong>敏感資料</strong>，原則上<strong>禁止蒐集</strong>，例外需特別保護</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--aidef);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">🔗</div>
+        <div class="def-card-title">間接識別資料</div>
+        <div class="def-card-body">IP 位址、Cookie ID、裝置識別碼、行為資料等，單獨可能不識別，<strong>組合後可識別</strong>個人，同樣受保護</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--ink3);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">✂️</div>
+        <div class="def-card-title">去識別化資料</div>
+        <div class="def-card-body">經過處理後<strong>無法識別特定個人</strong>的資料，不在個資法保護範圍。但若可<strong>反向還原</strong>則仍為個資</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">1.2</span>台灣個資法核心原則</div>
+    <p class="prose">個資法規範個人資料的蒐集、處理及利用，遵循以下核心原則：</p>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">原則</th><th class="priv-h">說明</th><th class="priv-h">考試重點</th></tr></thead>
+      <tbody>
+        <tr><td><strong>目的限定原則</strong></td><td>蒐集個資須有明確、特定的目的，不得超出原始目的使用</td><td>「目的外利用」需當事人同意或法規依據</td></tr>
+        <tr><td><strong>比例原則</strong></td><td>蒐集範圍應以達成目的所必要的最少資料為限</td><td>不得過度蒐集（Data Minimization）</td></tr>
+        <tr><td><strong>告知與同意原則</strong></td><td>蒐集前須告知當事人，並取得同意（除法定例外）</td><td>特種個資需<strong>書面同意</strong></td></tr>
+        <tr><td><strong>安全保護原則</strong></td><td>應採取適當技術及組織措施防止個資外洩、毀損</td><td>資料外洩需通報主管機關</td></tr>
+        <tr><td><strong>當事人權利</strong></td><td>查詢權、請求閱覽/複製、更正、刪除、停止蒐集的權利</td><td>俗稱「被遺忘權」即刪除權</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">1.3</span>GDPR 與台灣個資法比較</div>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">比較項目</th><th class="priv-h">台灣個資法</th><th class="priv-h">歐盟 GDPR</th></tr></thead>
+      <tbody>
+        <tr><td><strong>適用地域</strong></td><td>在台灣境內蒐集、處理、利用</td><td>處理 EU 居民資料（無論在何地），具域外效力</td></tr>
+        <tr><td><strong>資料外洩通報</strong></td><td>未規定明確時限（實務依主管機關要求）</td><td><strong>72 小時</strong>內通報主管機關</td></tr>
+        <tr><td><strong>罰則</strong></td><td>最高罰鍰 1,500 萬元；刑事責任最高 5 年</td><td>最高全球年營業額 <strong>4%</strong> 或 2,000 萬歐元</td></tr>
+        <tr><td><strong>兒童個資</strong></td><td>未明確規定年齡門檻</td><td><strong>16 歲</strong>以下需監護人同意（各國可調整至 13 歲）</td></tr>
+        <tr><td><strong>被遺忘權</strong></td><td>有（刪除請求權）</td><td>明文規定為<strong>被遺忘權（Right to Erasure）</strong></td></tr>
+        <tr><td><strong>隱私設計</strong></td><td>未明文要求</td><td>要求<strong>Privacy by Design（內建隱私）</strong></td></tr>
+        <tr><td><strong>DPO 設置</strong></td><td>未強制</td><td>特定情況強制設立<strong>資料保護長（DPO）</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="box warn">
+      <div class="box-head">⚠️ 高頻考點</div>
+      <p>GDPR 外洩通報 <strong>72 小時</strong>；罰款最高 <strong>4% 年營業額或 2,000 萬歐元</strong>（取較高值）；強制設置 DPO 的條件：大規模監控、大規模處理特種資料、公共機構。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">1.4</span>資料主體的八大權利（GDPR）</div>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">權利名稱</th><th class="priv-h">內容說明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>知情權</strong></td><td>被告知資料如何被蒐集與使用</td></tr>
+        <tr><td><strong>查閱權</strong></td><td>可要求查閱持有的個人資料</td></tr>
+        <tr><td><strong>更正權</strong></td><td>更正不正確或不完整的個人資料</td></tr>
+        <tr><td><strong>被遺忘權（刪除權）</strong></td><td>在特定條件下要求刪除個人資料</td></tr>
+        <tr><td><strong>限制處理權</strong></td><td>在特定情況下限制對個人資料的處理</td></tr>
+        <tr><td><strong>可攜權</strong></td><td>以機器可讀格式取得並轉移個人資料（Data Portability）</td></tr>
+        <tr><td><strong>反對權</strong></td><td>反對特定目的的資料處理，如行銷用途</td></tr>
+        <tr><td><strong>自動決策豁免權</strong></td><td>不受完全自動化決策（含 AI 評分）的約束，要求人工審查</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--priv)">
+    <div class="quiz-title">章節測驗</div>
+
+    <div class="qblock">
+      <div class="q-text">
+        <span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q1</span>
+        依台灣個資法，下列何者屬於「特種個人資料」，原則上禁止蒐集？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','姓名是一般個人資料，不屬於需要特別保護的特種個資。')"><span class="opt-l">A</span>姓名與出生年月日</div>
+        <div class="q-opt" onclick="answer(this,'wrong','財務情況雖然敏感，但不在個資法第6條特種個資的列舉範圍。')"><span class="opt-l">B</span>財務情況與信用評等</div>
+        <div class="q-opt" onclick="answer(this,'correct','基因資料屬於個資法第6條明列的特種個人資料，包含病歷、醫療、基因、性生活、健康檢查及犯罪前科。這些資料具有高度敏感性，原則上禁止蒐集、處理或利用，例外需有明確法律依據或書面同意。')"><span class="opt-l">C</span>基因資料與病歷</div>
+        <div class="q-opt" onclick="answer(this,'wrong','聯絡資訊（如電話、住址）屬於一般個人資料。')"><span class="opt-l">D</span>電話號碼與住址</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+
+    <div class="qblock">
+      <div class="q-text">
+        <span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q2</span>
+        GDPR 規定，企業發生個人資料外洩後，必須在多少小時內通報主管機關？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','24 小時太短，且不是 GDPR 的規定。')"><span class="opt-l">A</span>24 小時</div>
+        <div class="q-opt" onclick="answer(this,'correct','GDPR 第 33 條明確規定：自知悉資料外洩起 72 小時內，資料控管者（Data Controller）必須向主管機關（監管機構）通報，除非外洩不可能對自然人的權利和自由造成風險。若超過 72 小時，需附上延遲說明。')"><span class="opt-l">B</span>72 小時</div>
+        <div class="q-opt" onclick="answer(this,'wrong','7 個工作天非 GDPR 的規定，但某些其他法規（如部分美國州法）可能有此期限。')"><span class="opt-l">C</span>7 個工作天</div>
+        <div class="q-opt" onclick="answer(this,'wrong','30 天是 GDPR 通知當事人的參考期限，不是通報主管機關的期限。')"><span class="opt-l">D</span>30 天</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+
+    <div class="qblock">
+      <div class="q-text">
+        <span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q3</span>
+        GDPR 中「資料可攜權（Data Portability）」的主要意義是？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','刪除資料是被遺忘權，不是資料可攜權。')"><span class="opt-l">A</span>要求企業立即刪除所有個人資料</div>
+        <div class="q-opt" onclick="answer(this,'wrong','反對行銷是反對權的內容，不是可攜權。')"><span class="opt-l">B</span>反對將個資用於行銷目的</div>
+        <div class="q-opt" onclick="answer(this,'correct','資料可攜權（Article 20 GDPR）允許當事人以結構化、通用且機器可讀的格式（如 JSON、CSV）取得自己的個人資料，並有權將這些資料直接傳輸給其他服務提供者。這促進了平台間的競爭，防止資料被特定業者「鎖定」。')"><span class="opt-l">C</span>以機器可讀格式取得個資並轉移至其他服務商</div>
+        <div class="q-opt" onclick="answer(this,'wrong','要求人工審查是自動決策豁免權，不是可攜權。')"><span class="opt-l">D</span>要求 AI 決策結果必須有人工審查</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(0)">← 課程總覽</button>
+    <button class="btn btn-teal" onclick="gotoChapter(2)">下一章：隱私強化技術 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH2 — 隱私強化技術
+     ═══════════════════════════ -->
+<div class="chapter" id="ch2" style="--subject-color:var(--priv)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--priv)"><span class="e-bar" style="background:var(--priv)"></span>資料隱私與安全 · Chapter 02</div>
+    <h2 class="ch-title">隱私強化<br>技術（PETs）</h2>
+    <p class="ch-desc">掌握去識別化、差分隱私、聯邦學習等隱私保護技術的原理、效果與限制，這是考試中技術類的高頻出題點。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">去識別化</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">差分隱私</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">k-匿名</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">聯邦學習</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">2.1</span>去識別化技術</div>
+    <p class="prose">去識別化（De-identification）是透過技術手段處理資料，使其無法直接識別特定個人。效果強弱排序：</p>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">技術</th><th class="priv-h">說明</th><th class="priv-h">優點</th><th class="priv-h">風險</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>資料遮蔽<br>（Masking）</strong></td>
+          <td>部分隱藏敏感欄位，如身分證 A123****</td>
+          <td>保留部分資料可用性</td>
+          <td>仍可能透過其他資料還原</td>
+        </tr>
+        <tr>
+          <td><strong>假名化<br>（Pseudonymisation）</strong></td>
+          <td>用假名/代碼取代識別符，但保留對應金鑰</td>
+          <td>GDPR 承認可降低風險但仍屬個資</td>
+          <td>金鑰外洩仍可還原</td>
+        </tr>
+        <tr>
+          <td><strong>匿名化<br>（Anonymisation）</strong></td>
+          <td>不可逆地移除所有識別資訊，無法還原</td>
+          <td>不再受 GDPR/個資法管轄</td>
+          <td>資料效用降低；技術上難以達到真正匿名</td>
+        </tr>
+        <tr>
+          <td><strong>資料泛化<br>（Generalisation）</strong></td>
+          <td>精確值模糊化，如年齡 32 → 30-34 歲</td>
+          <td>k-匿名的基礎</td>
+          <td>泛化程度越高，資料價值越低</td>
+        </tr>
+        <tr>
+          <td><strong>資料擾動<br>（Perturbation）</strong></td>
+          <td>加入隨機雜訊，如差分隱私機制</td>
+          <td>可量化隱私保護強度</td>
+          <td>統計準確性有所犧牲</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">2.2</span>k-匿名、l-多樣性、t-接近性</div>
+    <p class="prose">這三種是遞進強化的匿名模型，解決不同層次的再識別風險：</p>
+    <div class="def-grid">
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--priv);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">🔢</div>
+        <div class="def-card-title">k-匿名（k-anonymity）</div>
+        <div class="def-card-body">資料集中每筆記錄至少與其他 <strong>k-1 筆</strong>記錄在準識別符（如性別、年齡、郵遞區號）上無法區分。<br><br>弱點：若群組內敏感屬性相同，仍可推測個人資訊（同質性攻擊）</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--aidef);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">🎨</div>
+        <div class="def-card-title">l-多樣性（l-diversity）</div>
+        <div class="def-card-body">在 k-匿名的基礎上，每個等價類別中的敏感屬性至少要有 <strong>l 個</strong>不同的值。<br><br>解決 k-匿名的同質性問題，但仍有傾斜攻擊風險</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gov);border-radius:8px 8px 0 0"></div>
+        <div class="def-card-icon">📊</div>
+        <div class="def-card-title">t-接近性（t-closeness）</div>
+        <div class="def-card-body">等價類中敏感屬性的分布與整體資料集的分布差距不超過 <strong>t</strong>。<br><br>是三者中最強的隱私保護，但資料效用也最低</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">2.3</span>差分隱私（Differential Privacy）</div>
+    <p class="prose"><strong>差分隱私</strong>是一種數學化的隱私保護框架，透過對查詢結果加入可控雜訊，使攻擊者無法判斷某特定個體是否存在於資料集中。</p>
+    <div class="box teal">
+      <div class="box-head">📐 核心定義</div>
+      <p>對任意相鄰資料集（差異僅一筆紀錄）D 和 D'，若演算法 M 的輸出機率分布滿足：<br>
+      <strong>Pr[M(D) ∈ S] ≤ e^ε × Pr[M(D') ∈ S]</strong><br>
+      則稱 M 滿足 ε-差分隱私。ε（epsilon）= 隱私預算，越小隱私保護越強。</p>
+    </div>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">面向</th><th class="priv-h">說明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>隱私預算 ε</strong></td><td>ε 越小 → 加入雜訊越多 → 隱私保護越強 → 準確性越低</td></tr>
+        <tr><td><strong>雜訊機制</strong></td><td>Laplace 機制（數值查詢）；Gaussian 機制（近似差分隱私）；指數機制（離散輸出）</td></tr>
+        <tr><td><strong>實際應用</strong></td><td>Apple iOS 鍵盤、Google Chrome 瀏覽統計、美國人口普查資料發布</td></tr>
+        <tr><td><strong>全局 vs 本地</strong></td><td>全局差分隱私：中央機構加雜訊後發布；<strong>本地差分隱私（LDP）</strong>：資料在離開用戶裝置前即加雜訊</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">2.4</span>聯邦學習（Federated Learning）</div>
+    <p class="prose"><strong>聯邦學習</strong>讓多方在不共享原始資料的情況下，共同訓練機器學習模型。資料留在各方本地，僅傳輸模型梯度或參數更新。</p>
+    <div class="vs-grid">
+      <div class="vs-card">
+        <div class="vs-card-head"><span class="vs-dot" style="background:var(--priv)"></span>水平聯邦學習</div>
+        <ul class="bul">
+          <li>各方資料具有<strong>相同特徵、不同樣本</strong></li>
+          <li>例：兩家銀行使用相同特徵（收入、年齡）訓練信用模型</li>
+          <li>每方本地訓練後，上傳梯度到中央伺服器聚合</li>
+        </ul>
+      </div>
+      <div class="vs-card">
+        <div class="vs-card-head"><span class="vs-dot" style="background:var(--aidef)"></span>垂直聯邦學習</div>
+        <ul class="bul">
+          <li>各方擁有<strong>相同樣本、不同特徵</strong></li>
+          <li>例：銀行（財務特徵）+ 電商（購物行為）聯合預測</li>
+          <li>需要加密協議對齊樣本，隱私保護需求更高</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box teal">
+      <div class="box-head">💡 聯邦學習的優缺點</div>
+      <p><strong>優點</strong>：原始資料不離開本地、符合資料本地化法規（如歐盟 GDPR）、適合醫療/金融等高隱私場景。<br>
+      <strong>缺點</strong>：梯度攻擊（Gradient Inversion）可能重建原始資料；通訊成本高；模型聚合難處理非 IID 資料。</p>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--priv)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q1</span>
+        差分隱私中，隱私預算 ε（epsilon）越小代表什麼？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','ε 越小是加入更多雜訊，準確性越低而非越高。')"><span class="opt-l">A</span>隱私保護越弱，資料準確性越高</div>
+        <div class="q-opt" onclick="answer(this,'correct','ε 是差分隱私的「隱私預算」，ε 越小代表要求更嚴格的隱私保護，系統會加入更多隨機雜訊來混淆個體資訊，使攻擊者更難判斷某個體是否在資料集中。但代價是資料的統計準確性下降。常見設定：ε < 1 為強保護，ε ≈ ln2 或 ln3 為中等保護。')"><span class="opt-l">B</span>隱私保護越強，資料準確性相對降低</div>
+        <div class="q-opt" onclick="answer(this,'wrong','ε 的大小與通訊成本無關。')"><span class="opt-l">C</span>模型訓練所需的通訊成本越低</div>
+        <div class="q-opt" onclick="answer(this,'wrong','ε 是隱私保護強度的參數，不代表 k-匿名的分組大小。')"><span class="opt-l">D</span>資料分組的樣本數越少</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q2</span>
+        聯邦學習的最大隱私優勢是？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','聯邦學習中各方仍需傳輸梯度/參數，通訊成本通常高於集中式訓練。')"><span class="opt-l">A</span>完全不需要網路通訊</div>
+        <div class="q-opt" onclick="answer(this,'wrong','聯邦學習並不比集中式訓練更快，反而因為通訊開銷而更慢。')"><span class="opt-l">B</span>模型訓練速度最快</div>
+        <div class="q-opt" onclick="answer(this,'correct','聯邦學習的核心優勢是原始資料留在本地，只分享模型梯度或參數更新，而不是原始資料。這大大降低了資料隱私外洩風險，符合 GDPR 等法規要求，尤其適合醫療、金融等高隱私場景（如各醫院聯合訓練診斷模型，而無需分享病患資料）。')"><span class="opt-l">C</span>原始資料不離開各方本地裝置</div>
+        <div class="q-opt" onclick="answer(this,'wrong','聯邦學習的梯度仍可能遭受梯度反演攻擊，無法保證100%安全。')"><span class="opt-l">D</span>資料完全不可能被重建</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(1)">← 核心概念與法規</button>
+    <button class="btn btn-teal" onclick="gotoChapter(3)">下一章：資料安全管理 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH3 — 資料安全管理
+     ═══════════════════════════ -->
+<div class="chapter" id="ch3" style="--subject-color:var(--priv)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--priv)"><span class="e-bar" style="background:var(--priv)"></span>資料隱私與安全 · Chapter 03</div>
+    <h2 class="ch-title">資料安全<br>管理實務</h2>
+    <p class="ch-desc">從 CIA 三元組到資料生命週期管理，掌握資安管理的核心架構與 AI 系統特有的安全挑戰。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">CIA 三元組</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">加密技術</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">資料生命週期</span>
+      <span class="kw-tag" style="color:var(--priv);border-color:var(--priv-border);background:var(--priv-bg)">AI 特有攻擊</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">3.1</span>資訊安全 CIA 三元組</div>
+    <div class="def-grid">
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--priv)"></div>
+        <div class="def-card-icon">🔒</div>
+        <div class="def-card-title">機密性 Confidentiality</div>
+        <div class="def-card-body">確保資訊只能被<strong>授權人員</strong>存取。<br><br>技術：加密、存取控制（RBAC）、身分驗證（MFA）</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--aidef)"></div>
+        <div class="def-card-icon">✅</div>
+        <div class="def-card-title">完整性 Integrity</div>
+        <div class="def-card-body">確保資訊在傳輸和儲存過程中<strong>未被竄改</strong>。<br><br>技術：雜湊函數（SHA-256）、數位簽章、校驗碼</div>
+      </div>
+      <div class="def-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gov)"></div>
+        <div class="def-card-icon">⚡</div>
+        <div class="def-card-title">可用性 Availability</div>
+        <div class="def-card-body">確保<strong>授權用戶在需要時</strong>能存取資源。<br><br>技術：備份、負載平衡、DDoS 防護、容災復原</div>
+      </div>
+    </div>
+    <div class="box warn">
+      <div class="box-head">⚠️ 考試陷阱</div>
+      <p>CIA 三元組是資安的基礎框架，每個元素有明確的威脅對應：<br>
+      <strong>機密性威脅</strong>：資料外洩、竊聽、社交工程<br>
+      <strong>完整性威脅</strong>：資料竄改、中間人攻擊（MITM）<br>
+      <strong>可用性威脅</strong>：DDoS 攻擊、勒索軟體、系統故障</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">3.2</span>資料生命週期管理</div>
+    <div class="hier-wrap">
+      <div class="hier-title">DATA LIFECYCLE</div>
+      <div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:8px">
+        <div style="text-align:center;min-width:80px">
+          <div style="background:var(--priv-bg);border:1px solid var(--priv-border);border-radius:6px;padding:8px;font-size:12px;font-weight:600;color:var(--priv)">蒐集</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:4px;font-family:var(--mono)">Collection</div>
+        </div>
+        <div style="width:28px;height:1px;background:var(--rule);position:relative;flex-shrink:0"><div style="position:absolute;right:-3px;top:-4px;color:var(--ink4);font-size:10px">▶</div></div>
+        <div style="text-align:center;min-width:80px">
+          <div style="background:var(--priv-bg);border:1px solid var(--priv-border);border-radius:6px;padding:8px;font-size:12px;font-weight:600;color:var(--priv)">儲存</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:4px;font-family:var(--mono)">Storage</div>
+        </div>
+        <div style="width:28px;height:1px;background:var(--rule);position:relative;flex-shrink:0"><div style="position:absolute;right:-3px;top:-4px;color:var(--ink4);font-size:10px">▶</div></div>
+        <div style="text-align:center;min-width:80px">
+          <div style="background:var(--priv-bg);border:1px solid var(--priv-border);border-radius:6px;padding:8px;font-size:12px;font-weight:600;color:var(--priv)">處理</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:4px;font-family:var(--mono)">Processing</div>
+        </div>
+        <div style="width:28px;height:1px;background:var(--rule);position:relative;flex-shrink:0"><div style="position:absolute;right:-3px;top:-4px;color:var(--ink4);font-size:10px">▶</div></div>
+        <div style="text-align:center;min-width:80px">
+          <div style="background:var(--priv-bg);border:1px solid var(--priv-border);border-radius:6px;padding:8px;font-size:12px;font-weight:600;color:var(--priv)">使用</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:4px;font-family:var(--mono)">Usage</div>
+        </div>
+        <div style="width:28px;height:1px;background:var(--rule);position:relative;flex-shrink:0"><div style="position:absolute;right:-3px;top:-4px;color:var(--ink4);font-size:10px">▶</div></div>
+        <div style="text-align:center;min-width:80px">
+          <div style="background:var(--priv-bg);border:1px solid var(--priv-border);border-radius:6px;padding:8px;font-size:12px;font-weight:600;color:var(--priv)">分享</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:4px;font-family:var(--mono)">Sharing</div>
+        </div>
+        <div style="width:28px;height:1px;background:var(--rule);position:relative;flex-shrink:0"><div style="position:absolute;right:-3px;top:-4px;color:var(--ink4);font-size:10px">▶</div></div>
+        <div style="text-align:center;min-width:80px">
+          <div style="background:var(--gov-bg);border:1px solid var(--gov-border);border-radius:6px;padding:8px;font-size:12px;font-weight:600;color:var(--gov)">銷毀</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:4px;font-family:var(--mono)">Destruction</div>
+        </div>
+      </div>
+    </div>
+    <p class="prose" style="margin-top:8px">每個生命週期階段都有對應的保護措施與合規要求，特別是<strong>銷毀階段</strong>：必須確保資料被安全、不可逆地刪除（如覆寫、消磁、物理銷毀），避免資料外洩。</p>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">3.3</span>AI 系統的特有安全威脅</div>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">威脅類型</th><th class="priv-h">說明</th><th class="priv-h">防禦措施</th></tr></thead>
+      <tbody>
+        <tr><td><strong>對抗性攻擊<br>（Adversarial Attack）</strong></td><td>對輸入資料加入人類不可察覺的微小擾動，使模型做出錯誤預測（如讓停車標誌被辨識為速限牌）</td><td>對抗訓練（Adversarial Training）、輸入驗證</td></tr>
+        <tr><td><strong>資料投毒<br>（Data Poisoning）</strong></td><td>在訓練資料中植入惡意樣本，影響模型行為（如後門攻擊/Backdoor Attack）</td><td>訓練資料清洗、資料來源驗證</td></tr>
+        <tr><td><strong>模型逆向攻擊<br>（Model Inversion）</strong></td><td>透過對模型反覆查詢，重建訓練資料中的個人資訊</td><td>差分隱私、輸出限制、查詢速率限制</td></tr>
+        <tr><td><strong>成員推斷攻擊<br>（Membership Inference）</strong></td><td>推斷某特定個體的資料是否曾被用於訓練（隱私外洩）</td><td>差分隱私、正則化、模型輸出混淆</td></tr>
+        <tr><td><strong>提示注入<br>（Prompt Injection）</strong></td><td>對生成式 AI 輸入惡意指令，使其忽略原始系統指令</td><td>輸入驗證、系統提示硬化、輸出過濾</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--priv)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q1</span>
+        攻擊者在訓練資料中植入惡意樣本，使 AI 模型在特定觸發條件下做出錯誤輸出，這是哪種攻擊？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','對抗性攻擊是在推論時操控輸入，不是在訓練階段植入惡意資料。')"><span class="opt-l">A</span>對抗性攻擊（Adversarial Attack）</div>
+        <div class="q-opt" onclick="answer(this,'correct','資料投毒（Data Poisoning）或後門攻擊（Backdoor Attack）：攻擊者污染訓練資料集，使模型學到錯誤的模式。「後門攻擊」是其中特定形式——模型正常情況下運作正常，但當輸入包含特定觸發模式（trigger pattern）時，就會做出攻擊者預設的錯誤輸出。')"><span class="opt-l">B</span>資料投毒攻擊（Data Poisoning Attack）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','模型逆向是透過查詢模型輸出來重建訓練資料，不涉及直接污染訓練集。')"><span class="opt-l">C</span>模型逆向攻擊（Model Inversion）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','DDoS 是使系統不可用，不是影響模型行為。')"><span class="opt-l">D</span>分散式阻斷服務（DDoS）</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--priv-bg);color:var(--priv);border:1px solid var(--priv-border)">Q2</span>
+        資訊安全 CIA 三元組中，「可用性（Availability）」受到威脅時，最典型的攻擊方式是？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','社交工程（釣魚攻擊）主要威脅機密性，讓攻擊者取得未授權存取。')"><span class="opt-l">A</span>社交工程與釣魚攻擊</div>
+        <div class="q-opt" onclick="answer(this,'wrong','中間人攻擊（MITM）主要威脅完整性，攔截並可能竄改傳輸中的資料。')"><span class="opt-l">B</span>中間人攻擊（MITM）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','SQL 注入主要威脅機密性和完整性，不直接影響可用性。')"><span class="opt-l">C</span>SQL 注入攻擊</div>
+        <div class="q-opt" onclick="answer(this,'correct','分散式阻斷服務攻擊（DDoS）透過大量流量壓垮系統資源，使合法用戶無法存取服務——這正是對「可用性（Availability）」的直接攻擊。勒索軟體也是另一個典型的可用性威脅（加密檔案使系統不可用）。')"><span class="opt-l">D</span>分散式阻斷服務攻擊（DDoS）</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(2)">← 隱私強化技術</button>
+    <button class="btn btn-amber" onclick="gotoChapter(4)">前往：AI 定義與分類 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH4 — AI 定義與發展史
+     ═══════════════════════════ -->
+<div class="chapter" id="ch4" style="--subject-color:var(--aidef)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--aidef)"><span class="e-bar" style="background:var(--aidef)"></span>AI 的定義與分類 · Chapter 04</div>
+    <h2 class="ch-title">AI 定義與<br>發展歷程</h2>
+    <p class="ch-desc">從圖靈測試到生成式 AI，理解人工智慧的多元定義、核心特徵，以及重要里程碑——這是 IPAS 考試的理論基礎題型。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">圖靈測試</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">機器學習</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">深度學習</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">生成式 AI</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">4.1</span>人工智慧的定義</div>
+    <p class="prose">人工智慧（Artificial Intelligence, AI）沒有統一的單一定義，從不同視角有不同詮釋：</p>
+    <table class="tbl">
+      <thead><tr><th class="aidef-h">定義視角</th><th class="aidef-h">代表性定義</th></tr></thead>
+      <tbody>
+        <tr><td><strong>思維模仿</strong></td><td>「使電腦能夠執行目前仍需要人類智慧的任務」—— Minsky（1968）</td></tr>
+        <tr><td><strong>行為能力</strong></td><td>「機器若能展現與人類相當或無法區分的智能行為」—— 圖靈（Turing Test, 1950）</td></tr>
+        <tr><td><strong>系統觀點</strong></td><td>「能夠感知環境、採取行動，以達成目標的系統」—— Russell & Norvig（2020）</td></tr>
+        <tr><td><strong>歐盟觀點</strong></td><td>「能夠推理、學習、規劃、創造並作用於實體或數位環境的系統」—— EU AI Act（2024）</td></tr>
+      </tbody>
+    </table>
+    <div class="box amber">
+      <div class="box-head">📝 圖靈測試（Turing Test）</div>
+      <p>由 Alan Turing 於 1950 年提出的思想實驗。若人類評審在與機器文字對話後，無法區分對話對象是人類還是機器，則認為該機器具有智能。<br>
+      <strong>局限性</strong>：通過圖靈測試不代表真正理解或具有意識，只是模仿能力的展現（中文房間論證的批評）。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">4.2</span>AI 發展歷程重要里程碑</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">1950</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">圖靈測試提出</div>
+          <div class="tl-body">Alan Turing 發表《Computing Machinery and Intelligence》，提出機器能否思考的問題，奠定 AI 哲學基礎</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">1956</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">達特茅斯會議：「AI」正式命名</div>
+          <div class="tl-body">John McCarthy 等人在達特茅斯會議提出「人工智慧」一詞，標誌 AI 作為學術領域的誕生</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">1980s</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">專家系統興起</div>
+          <div class="tl-body">規則式 AI（Rule-based AI）盛行，使用人工編寫的 if-then 規則模擬領域專家知識</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">1997</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">Deep Blue 擊敗棋王</div>
+          <div class="tl-body">IBM Deep Blue 擊敗世界西洋棋冠軍 Garry Kasparov，引發大眾對 AI 能力的廣泛關注</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">2012</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">深度學習突破（AlexNet）</div>
+          <div class="tl-body">AlexNet 在 ImageNet 競賽大幅領先，引發深度學習革命，GPU 訓練成為主流</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">2016</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">AlphaGo 擊敗圍棋世界冠軍</div>
+          <div class="tl-body">Google DeepMind AlphaGo 擊敗李世乭，圍棋被視為 AI 最後一道壁壘的觀念被打破</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">2017</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">Transformer 架構問世</div>
+          <div class="tl-body">Google「Attention Is All You Need」論文提出 Transformer，成為現代 LLM 的基礎架構</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year" style="color:var(--aidef)">2022</div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--aidef)"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">ChatGPT 帶動生成式 AI 熱潮</div>
+          <div class="tl-body">OpenAI ChatGPT 發布，5 天達 100 萬用戶，生成式 AI 進入大眾市場，引發全球 AI 監管討論</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--aidef)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--aidef-bg);color:var(--aidef);border:1px solid var(--aidef-border)">Q1</span>
+        「人工智慧」（AI）一詞最早正式提出於哪個場合？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','Alan Turing 於 1950 年提出的是圖靈測試，他稱之為「模仿遊戲」，並未使用「AI」一詞。')"><span class="opt-l">A</span>1950 年，Alan Turing 發表的圖靈測試論文</div>
+        <div class="q-opt" onclick="answer(this,'correct','1956 年的達特茅斯會議（Dartmouth Conference）由 John McCarthy 等人提議召開，McCarthy 正式提出「人工智慧」（Artificial Intelligence）一詞，這次會議被普遍視為 AI 作為獨立學術領域的誕生地。')"><span class="opt-l">B</span>1956 年，達特茅斯會議（由 John McCarthy 等人召開）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','Deep Blue 擊敗 Kasparov 是 1997 年，這已是 AI 命名後 40 年的事了。')"><span class="opt-l">C</span>1997 年，IBM Deep Blue 擊敗西洋棋冠軍</div>
+        <div class="q-opt" onclick="answer(this,'wrong','AlphaGo 是 2016 年的事，那是 AI 領域發展的一個里程碑，而非 AI 命名的起源。')"><span class="opt-l">D</span>2016 年，AlphaGo 擊敗圍棋世界冠軍</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--aidef-bg);color:var(--aidef);border:1px solid var(--aidef-border)">Q2</span>
+        2017 年 Google 發表的 Transformer 架構，其核心機制是什麼？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','卷積神經網路（CNN）是 1998 年就有的架構（LeNet），主要用於影像處理，不是 Transformer 的核心機制。')"><span class="opt-l">A</span>卷積神經網路（CNN）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','遞迴神經網路（RNN/LSTM）是 Transformer 出現前用於序列任務的主要架構，Transformer 正是為了解決 RNN 的長程依賴問題而設計。')"><span class="opt-l">B</span>遞迴神經網路（RNN/LSTM）</div>
+        <div class="q-opt" onclick="answer(this,'correct','Transformer 的核心是「自注意力機制（Self-Attention）」，論文標題就是「Attention Is All You Need」。它允許模型在處理序列資料時，對序列中任意位置的關係進行直接建模，克服了 RNN 的長程依賴問題，成為 GPT、BERT 等所有大型語言模型的基礎架構。')"><span class="opt-l">C</span>自注意力機制（Self-Attention）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','強化學習是一種學習範式，不是 Transformer 架構的核心機制。')"><span class="opt-l">D</span>強化學習（Reinforcement Learning）</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(3)">← 資料安全管理</button>
+    <button class="btn btn-amber" onclick="gotoChapter(5)">下一章：依能力分類 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH5 — AI 依能力分類
+     ═══════════════════════════ -->
+<div class="chapter" id="ch5" style="--subject-color:var(--aidef)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--aidef)"><span class="e-bar" style="background:var(--aidef)"></span>AI 的定義與分類 · Chapter 05</div>
+    <h2 class="ch-title">依能力分類：<br>ANI、AGI、ASI</h2>
+    <p class="ch-desc">依據 AI 的能力廣度與深度，可分為三個層次。理解這三種分類的差異是 IPAS 考試的必考概念。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">ANI 弱人工智慧</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">AGI 通用人工智慧</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">ASI 超人工智慧</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">5.1</span>三層能力分類</div>
+    <div class="ai-spectrum" style="border-color:var(--aidef-border)">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink4);margin-bottom:12px">AI CAPABILITY SPECTRUM</div>
+      <div class="spectrum-bar">
+        <div class="spec-seg" style="background:var(--priv);flex:3">ANI</div>
+        <div class="spec-seg" style="background:var(--aidef);flex:1">AGI</div>
+        <div class="spec-seg" style="background:var(--gov);flex:0.6">ASI</div>
+      </div>
+      <div class="spec-labels">
+        <span>現今所有 AI 均屬此類 →</span>
+        <span>← 理論上 →</span>
+        <span>← 未來假設</span>
+      </div>
+    </div>
+
+    <table class="tbl" style="margin-top:16px">
+      <thead><tr><th class="aidef-h">類型</th><th class="aidef-h">名稱</th><th class="aidef-h">特徵</th><th class="aidef-h">現實狀態</th><th class="aidef-h">範例</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--priv)">ANI</strong></td>
+          <td>弱人工智慧<br>Narrow AI</td>
+          <td>專注於<strong>特定任務</strong>，在該任務上可超越人類，但無法泛化到其他領域</td>
+          <td>✅ 現已存在</td>
+          <td>人臉辨識、圍棋 AI、語音助理、ChatGPT</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--aidef)">AGI</strong></td>
+          <td>通用人工智慧<br>General AI</td>
+          <td>能像人類一樣在<strong>任何認知任務</strong>上進行學習與推理，具備跨領域泛化能力</td>
+          <td>🔬 研究階段<br>（尚未實現）</td>
+          <td>尚不存在；部分人認為 GPT-4 是 AGI 的早期跡象</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--gov)">ASI</strong></td>
+          <td>超人工智慧<br>Super AI</td>
+          <td>在所有認知能力上全面<strong>超越最優秀的人類</strong>，包括科學創造力、社交智能等</td>
+          <td>🔮 未來假設<br>（理論概念）</td>
+          <td>科幻作品中的 AI；學術上關注其對齊問題</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="box amber">
+      <div class="box-head">📝 考試重點</div>
+      <p>目前所有實際存在並運作的 AI 系統（包括 ChatGPT、AlphaGo、Siri）都屬於 <strong>ANI（弱人工智慧）</strong>，即使它們在特定任務上超越人類，也只限於該任務。AGI 和 ASI 目前仍是研究目標與理論假設。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">5.2</span>強 AI vs 弱 AI（哲學角度）</div>
+    <div class="vs-grid">
+      <div class="vs-card" style="border-color:var(--aidef-border)">
+        <div class="vs-card-head"><span class="vs-dot" style="background:var(--priv)"></span>弱 AI（Weak AI）</div>
+        <ul class="bul">
+          <li>AI <strong>模擬</strong>智能行為，但不真正理解或擁有意識</li>
+          <li>約翰·塞爾（John Searle）的觀點：電腦只是在<strong>操弄符號</strong>，不具備真正的理解（中文房間論證）</li>
+          <li>所有現有 AI 系統</li>
+        </ul>
+      </div>
+      <div class="vs-card" style="border-color:var(--aidef-border)">
+        <div class="vs-card-head"><span class="vs-dot" style="background:var(--gov)"></span>強 AI（Strong AI）</div>
+        <ul class="bul">
+          <li>AI <strong>真正具備</strong>理解、意識與心智</li>
+          <li>若 AGI 真正實現，且機器具備真正的自我意識，就屬於強 AI</li>
+          <li>目前仍屬哲學討論，非現實</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--aidef)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--aidef-bg);color:var(--aidef);border:1px solid var(--aidef-border)">Q1</span>
+        下列 AI 系統中，哪一個屬於「通用人工智慧（AGI）」？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','ChatGPT 雖然能力廣泛，但仍是專注於語言任務的 ANI，無法自主學習新技能或在物理世界行動。')"><span class="opt-l">A</span>ChatGPT</div>
+        <div class="q-opt" onclick="answer(this,'wrong','AlphaGo 只能下圍棋，是最典型的 ANI（窄域 AI）。')"><span class="opt-l">B</span>AlphaGo</div>
+        <div class="q-opt" onclick="answer(this,'wrong','自動駕駛雖然整合多種感知與決策，但仍限於駕駛任務，屬於 ANI。')"><span class="opt-l">C</span>特斯拉自動駕駛系統</div>
+        <div class="q-opt" onclick="answer(this,'correct','目前沒有任何現實存在的系統屬於 AGI。AGI 需要能夠像人類一樣在任何認知任務上學習和推理，具備跨領域泛化能力——這至今仍未實現，是 AI 研究的長期目標。選擇「以上皆非」是唯一正確答案。')"><span class="opt-l">D</span>以上皆非（目前尚無 AGI 存在）</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--aidef-bg);color:var(--aidef);border:1px solid var(--aidef-border)">Q2</span>
+        約翰·塞爾的「中文房間」論證主要是用來反駁什麼？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','中文房間論證不是關於 AI 的速度，而是關於理解能力。')"><span class="opt-l">A</span>電腦無法快速處理自然語言</div>
+        <div class="q-opt" onclick="answer(this,'correct','中文房間論證（1980 年）：一個完全不懂中文的人在房間裡按照規則手冊操作中文符號，對外表現得像能讀懂中文——但這個人對中文毫無理解。塞爾用此比喻指出：AI（尤其強 AI 的主張）只是在操弄符號，而非真正理解語言或具備意識。這直接反駁了「通過圖靈測試=具有真實智能」的強 AI 論點。')"><span class="opt-l">B</span>通過圖靈測試的機器不一定真正理解語言或具有意識</div>
+        <div class="q-opt" onclick="answer(this,'wrong','機器學習的效能問題不是中文房間論證的主題。')"><span class="opt-l">C</span>機器學習需要大量訓練資料</div>
+        <div class="q-opt" onclick="answer(this,'wrong','AI 的倫理問題雖重要，但不是中文房間論證的直接主題。')"><span class="opt-l">D</span>AI 的倫理問題無法解決</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(4)">← AI 定義與發展史</button>
+    <button class="btn btn-amber" onclick="gotoChapter(6)">下一章：依技術分類 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH6 — AI 依技術分類
+     ═══════════════════════════ -->
+<div class="chapter" id="ch6" style="--subject-color:var(--aidef)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--aidef)"><span class="e-bar" style="background:var(--aidef)"></span>AI 的定義與分類 · Chapter 06</div>
+    <h2 class="ch-title">依技術分類：<br>ML、DL 與生成式 AI</h2>
+    <p class="ch-desc">從技術架構角度理解 AI 的層次關係：AI ⊇ 機器學習 ⊇ 深度學習 ⊇ 生成式 AI。掌握各層次的差異與代表技術。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">符號式 AI</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">機器學習</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">深度學習</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">生成式 AI</span>
+      <span class="kw-tag" style="color:var(--aidef);border-color:var(--aidef-border);background:var(--aidef-bg)">LLM</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">6.1</span>AI 技術分類層次關係</div>
+    <div class="hier-wrap">
+      <div class="hier-title">AI TECHNOLOGY HIERARCHY（包含關係）</div>
+      <div class="hier-tree">
+        <div class="hier-row">
+          <div class="hier-node" style="background:rgba(124,74,0,0.08);border-color:var(--aidef-border);color:var(--aidef)">人工智慧（AI）— 最廣義</div>
+          <div class="hier-sub">規則系統、機器學習、深度學習、專家系統…</div>
+        </div>
+        <div class="hier-row" style="margin-left:24px">
+          <div class="hier-line" style="background:var(--aidef)"></div>
+          <div class="hier-node" style="background:rgba(26,95,90,0.08);border-color:var(--priv-border);color:var(--priv)">機器學習（ML）— 次廣</div>
+          <div class="hier-sub">從資料中學習，含監督、非監督、強化學習</div>
+        </div>
+        <div class="hier-row" style="margin-left:48px">
+          <div class="hier-line" style="background:var(--priv)"></div>
+          <div class="hier-node" style="background:rgba(107,26,42,0.08);border-color:var(--gov-border);color:var(--gov)">深度學習（DL）— 更窄</div>
+          <div class="hier-sub">多層神經網路，需大量資料與算力</div>
+        </div>
+        <div class="hier-row" style="margin-left:72px">
+          <div class="hier-line" style="background:var(--gov)"></div>
+          <div class="hier-node" style="background:rgba(107,26,42,0.12);border-color:var(--gov);color:var(--gov);font-weight:700">生成式 AI（Gen AI）— 最窄</div>
+          <div class="hier-sub">生成新內容，含 LLM、擴散模型…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">6.2</span>各技術分類詳解</div>
+    <table class="tbl">
+      <thead><tr><th class="aidef-h">技術類型</th><th class="aidef-h">運作方式</th><th class="aidef-h">優點</th><th class="aidef-h">代表技術/應用</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>符號式 AI<br>（Symbolic AI）</strong></td>
+          <td>人工編寫規則（if-then），使用知識庫推理</td>
+          <td>高可解釋性；無需訓練資料</td>
+          <td>專家系統（MYCIN）、知識圖譜、Prolog</td>
+        </tr>
+        <tr>
+          <td><strong>機器學習（ML）</strong></td>
+          <td>從資料中自動學習模式，而非明確編程</td>
+          <td>能處理複雜模式；適應性強</td>
+          <td>決策樹、SVM、隨機森林、XGBoost</td>
+        </tr>
+        <tr>
+          <td><strong>深度學習（DL）</strong></td>
+          <td>多層神經網路自動提取特徵，端到端學習</td>
+          <td>感知任務精度高；自動特徵工程</td>
+          <td>CNN（圖像）、RNN/LSTM（序列）、Transformer</td>
+        </tr>
+        <tr>
+          <td><strong>生成式 AI<br>（Generative AI）</strong></td>
+          <td>學習資料分布，生成新的、逼真的內容</td>
+          <td>創意生成能力強；多模態支援</td>
+          <td>GPT/LLM（文字）、DALL-E（圖像）、Sora（影片）</td>
+        </tr>
+        <tr>
+          <td><strong>強化學習（RL）</strong></td>
+          <td>Agent 透過與環境互動的獎懲訊號學習最佳策略</td>
+          <td>無需標記資料；能解決序列決策</td>
+          <td>AlphaGo、自動駕駛、推薦系統</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">6.3</span>生成式 AI 核心概念</div>
+    <table class="tbl">
+      <thead><tr><th class="aidef-h">概念</th><th class="aidef-h">說明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>大型語言模型（LLM）</strong></td><td>基於 Transformer 架構，在海量文本上預訓練，能理解和生成自然語言。代表：GPT-4、Claude、Gemini、LLaMA</td></tr>
+        <tr><td><strong>基礎模型（Foundation Model）</strong></td><td>在大規模通用資料上預訓練，可透過微調（Fine-tuning）適應各種下游任務</td></tr>
+        <tr><td><strong>提示工程（Prompt Engineering）</strong></td><td>設計輸入提示以引導模型輸出，是使用 LLM 的關鍵技能</td></tr>
+        <tr><td><strong>幻覺（Hallucination）</strong></td><td>LLM 生成看似合理但實際上不正確的資訊，是生成式 AI 的主要風險</td></tr>
+        <tr><td><strong>RAG（檢索增強生成）</strong></td><td>結合向量資料庫與 LLM，先檢索相關文件再生成回答，減少幻覺</td></tr>
+        <tr><td><strong>GAN（對抗生成網路）</strong></td><td>生成器與判別器對抗訓練，可生成高品質圖像；Deep Fake 的技術基礎</td></tr>
+        <tr><td><strong>擴散模型（Diffusion Model）</strong></td><td>逐步去除雜訊生成圖像，是 Stable Diffusion、DALL-E 等圖像生成的基礎</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--aidef)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--aidef-bg);color:var(--aidef);border:1px solid var(--aidef-border)">Q1</span>
+        下列關於 AI 技術層次的描述，何者正確？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','關係相反：深度學習是機器學習的子集，機器學習是 AI 的子集，而非機器學習包含 AI。')"><span class="opt-l">A</span>機器學習（ML）包含人工智慧（AI）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','GAN 是一種深度學習生成模型，屬於深度學習的子集，不是強化學習。')"><span class="opt-l">B</span>GAN 屬於強化學習的一種</div>
+        <div class="q-opt" onclick="answer(this,'correct','正確的包含關係是：AI ⊇ 機器學習（ML）⊇ 深度學習（DL）⊇ 生成式 AI。所有深度學習都是機器學習的一種，所有機器學習都是 AI 的一種，但反之不一定成立（如符號式 AI 不是機器學習）。')"><span class="opt-l">C</span>深度學習（DL）是機器學習（ML）的子集</div>
+        <div class="q-opt" onclick="answer(this,'wrong','生成式 AI 以深度學習（尤其是 Transformer 和擴散模型）為基礎，不是強化學習的子集。')"><span class="opt-l">D</span>生成式 AI 包含強化學習</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--aidef-bg);color:var(--aidef);border:1px solid var(--aidef-border)">Q2</span>
+        大型語言模型（LLM）的「幻覺（Hallucination）」問題是指？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','模型速度慢是效能問題，不是幻覺問題。')"><span class="opt-l">A</span>模型運算速度過慢，無法即時回應</div>
+        <div class="q-opt" onclick="answer(this,'correct','LLM 幻覺是指模型生成看起來流暢合理、語法正確，但實際上是錯誤、編造或無法驗證的資訊。例如：引用不存在的論文、發明從未存在的歷史事實。這是因為 LLM 的訓練目標是預測「最可能的下一個詞」，而非「正確的資訊」。RAG 技術和事實核查是緩解幻覺的主要方法。')"><span class="opt-l">B</span>模型生成看似合理但實際上錯誤或編造的資訊</div>
+        <div class="q-opt" onclick="answer(this,'wrong','偏見問題是另一個重要的 AI 問題，但不是幻覺的定義。')"><span class="opt-l">C</span>模型對少數族群產生歧視性輸出</div>
+        <div class="q-opt" onclick="answer(this,'wrong','提示注入是一種安全攻擊，不是幻覺問題。')"><span class="opt-l">D</span>攻擊者透過輸入惡意提示控制模型輸出</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(5)">← 依能力分類</button>
+    <button class="btn btn-crimson" onclick="gotoChapter(7)">前往：AI 治理概念 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH7 — AI 治理原則
+     ═══════════════════════════ -->
+<div class="chapter" id="ch7" style="--subject-color:var(--gov)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--gov)"><span class="e-bar" style="background:var(--gov)"></span>AI 治理概念 · Chapter 07</div>
+    <h2 class="ch-title">負責任 AI<br>的核心原則</h2>
+    <p class="ch-desc">AI 治理的基石是一套被廣泛認可的核心原則，它們指導 AI 的開發、部署與監督，是 IPAS 考試的重點理論。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">可解釋性</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">公平性</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">問責制</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">透明性</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">以人為本</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">7.1</span>負責任 AI 七大核心原則</div>
+    <div class="principle-grid">
+      <div class="principle-card" data-num="1">
+        <div class="pc-icon">🔍</div>
+        <div class="pc-title">透明性（Transparency）</div>
+        <div class="pc-body">AI 系統的運作方式、決策依據應可被理解與審視。包括公開訓練資料來源、模型架構與決策過程。</div>
+      </div>
+      <div class="principle-card" data-num="2">
+        <div class="pc-icon">💡</div>
+        <div class="pc-title">可解釋性（Explainability）</div>
+        <div class="pc-body">AI 決策結果能夠以人類可理解的方式被解釋。對影響個人權益的決策尤為重要（如貸款審核）。<br><br><strong>XAI（可解釋性人工智慧）</strong>是相關技術領域。</div>
+      </div>
+      <div class="principle-card" data-num="3">
+        <div class="pc-icon">⚖️</div>
+        <div class="pc-title">公平性（Fairness）</div>
+        <div class="pc-body">AI 系統不應對特定族群產生不公平的歧視，無論是直接歧視（明確排除）或間接歧視（代理變數偏見）。<br><br>AI <strong>偏見</strong>常來自訓練資料的歷史偏見。</div>
+      </div>
+      <div class="principle-card" data-num="4">
+        <div class="pc-icon">🛡️</div>
+        <div class="pc-title">問責制（Accountability）</div>
+        <div class="pc-body">AI 系統的開發者、部署者與使用者應對其行為和後果負責。需明確界定責任歸屬，避免「無人負責」的情況。</div>
+      </div>
+      <div class="principle-card" data-num="5">
+        <div class="pc-icon">🔒</div>
+        <div class="pc-title">隱私與安全（Privacy & Security）</div>
+        <div class="pc-body">AI 系統應尊重並保護個人隱私，並具備抵禦惡意攻擊的安全性。包含資料蒐集最小化與隱私設計原則。</div>
+      </div>
+      <div class="principle-card" data-num="6">
+        <div class="pc-icon">🧭</div>
+        <div class="pc-title">可靠性與安全性（Reliability & Safety）</div>
+        <div class="pc-body">AI 系統應能穩定、準確地運作，特別是在安全攸關（Safety-critical）場景（如醫療診斷、自動駕駛）需有嚴格測試。</div>
+      </div>
+      <div class="principle-card" data-num="7">
+        <div class="pc-icon">🤝</div>
+        <div class="pc-title">以人為本（Human-centric）</div>
+        <div class="pc-body">AI 應服務於人類的利益與福祉，<strong>人類應保有最終控制權（Human-in-the-loop）</strong>，避免 AI 取代人類的核心判斷。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">7.2</span>AI 偏見的類型與來源</div>
+    <table class="tbl">
+      <thead><tr><th class="gov-h">偏見類型</th><th class="gov-h">定義</th><th class="gov-h">範例</th></tr></thead>
+      <tbody>
+        <tr><td><strong>資料偏見<br>（Data Bias）</strong></td><td>訓練資料本身包含歷史歧視或不均衡的分布</td><td>人臉辨識在深色皮膚人種上準確率顯著較低（MIT Media Lab 研究）</td></tr>
+        <tr><td><strong>演算法偏見<br>（Algorithmic Bias）</strong></td><td>模型設計或訓練目標本身引入的偏見</td><td>優化「準確率」在不平衡資料集上可能犧牲少數族群的預測品質</td></tr>
+        <tr><td><strong>評量偏見<br>（Measurement Bias）</strong></td><td>對不同群體採用不同標準衡量特徵</td><td>用犯罪紀錄預測再犯率，但犯罪紀錄本身受執法強度影響（COMPAS 爭議）</td></tr>
+        <tr><td><strong>互動偏見<br>（Interaction Bias）</strong></td><td>使用者互動行為強化了原有偏見</td><td>搜尋引擎推薦在用戶點選後持續強化既有偏好（過濾泡泡）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">7.3</span>可解釋性 AI（XAI）技術</div>
+    <table class="tbl">
+      <thead><tr><th class="gov-h">技術</th><th class="gov-h">說明</th><th class="gov-h">適用場景</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LIME</strong><br><small>Local Interpretable Model-agnostic Explanations</small></td><td>在預測點附近用簡單模型近似複雜模型的局部行為，解釋單次預測</td><td>任何黑盒模型的個別預測解釋</td></tr>
+        <tr><td><strong>SHAP</strong><br><small>SHapley Additive exPlanations</small></td><td>基於博弈論的 Shapley 值，公平分配每個特徵對預測的貢獻</td><td>特徵重要性分析；全局與局部解釋</td></tr>
+        <tr><td><strong>注意力視覺化</strong></td><td>顯示 Transformer 模型在處理輸入時，注意力集中在哪些部分</td><td>NLP 與 Vision Transformer 的解釋</td></tr>
+        <tr><td><strong>決策樹代理</strong></td><td>用可解釋的決策樹模擬複雜模型的整體行為</td><td>需要規則式解釋的監管場景</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--gov)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">Q1</span>
+        AI 系統對不同種族、性別族群的預測準確率存在顯著差異，主要反映了哪種 AI 倫理問題？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','可解釋性是指能否理解 AI 決策過程，與跨族群的準確率差異不同。')"><span class="opt-l">A</span>可解釋性不足</div>
+        <div class="q-opt" onclick="answer(this,'wrong','問責制是指誰應對 AI 後果負責，不是描述跨群體差異的問題。')"><span class="opt-l">B</span>問責制缺失</div>
+        <div class="q-opt" onclick="answer(this,'correct','跨族群的預測準確率差異是 AI 公平性（Fairness）問題，通常源於訓練資料中的歷史偏見或數據不均衡（如人臉辨識訓練集主要來自特定族群）。這種問題在高風險 AI 應用中（如司法、招聘、信貸）有重大的社會影響。')"><span class="opt-l">C</span>公平性（Fairness）問題</div>
+        <div class="q-opt" onclick="answer(this,'wrong','隱私保護是關於個人資料使用，與預測準確率的族群差異無關。')"><span class="opt-l">D</span>隱私保護不當</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">Q2</span>
+        SHAP（SHapley Additive exPlanations）是基於什麼理論發展出來的？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','深度學習是一種模型架構，不是 SHAP 的理論基礎。')"><span class="opt-l">A</span>深度學習的梯度計算</div>
+        <div class="q-opt" onclick="answer(this,'correct','SHAP 基於合作博弈論（Cooperative Game Theory）中的 Shapley 值。Shapley 值最初是用來公平分配合作賽局中各玩家的貢獻——SHAP 將每個特徵視為「玩家」，公平計算其對模型預測的邊際貢獻，是目前最具理論基礎的可解釋性方法。')"><span class="opt-l">B</span>合作博弈論（Cooperative Game Theory）中的 Shapley 值</div>
+        <div class="q-opt" onclick="answer(this,'wrong','貝葉斯統計是一種機率推斷框架，不是 SHAP 的直接理論基礎。')"><span class="opt-l">C</span>貝葉斯統計推斷</div>
+        <div class="q-opt" onclick="answer(this,'wrong','決策樹分裂是 LIME 等方法的靈感來源之一，不是 SHAP 的理論基礎。')"><span class="opt-l">D</span>決策樹的節點分裂準則</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(6)">← 依技術分類</button>
+    <button class="btn btn-crimson" onclick="gotoChapter(8)">下一章：國際框架與標準 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH8 — 國際框架與標準
+     ═══════════════════════════ -->
+<div class="chapter" id="ch8" style="--subject-color:var(--gov)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--gov)"><span class="e-bar" style="background:var(--gov)"></span>AI 治理概念 · Chapter 08</div>
+    <h2 class="ch-title">國際 AI 治理<br>框架與標準</h2>
+    <p class="ch-desc">掌握 OECD AI 原則、歐盟 AI 法案、ISO/IEC 標準等重要國際 AI 治理框架，這些是 IPAS 考試的國際視野考題。</p>
+    <div class="tag-wrap">
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">OECD AI 原則</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">EU AI Act</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">ISO/IEC 42001</span>
+      <span class="kw-tag" style="color:var(--gov);border-color:var(--gov-border);background:var(--gov-bg)">風險分級</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">8.1</span>OECD AI 原則（2019）</div>
+    <p class="prose">OECD 於 2019 年發布的 AI 原則，是最早被廣泛採納的國際 AI 治理框架，包含<strong>五大原則</strong>：</p>
+    <table class="tbl">
+      <thead><tr><th class="gov-h">原則</th><th class="gov-h">核心內容</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1. 包容性成長與永續發展</strong></td><td>AI 應惠及所有人，促進社會包容，支持環境永續</td></tr>
+        <tr><td><strong>2. 以人為本的價值觀</strong></td><td>AI 應尊重法治、人權與民主價值，強調多樣性</td></tr>
+        <tr><td><strong>3. 透明性與可解釋性</strong></td><td>AI 行為者應就 AI 系統提供透明且可理解的說明</td></tr>
+        <tr><td><strong>4. 穩健性、安全與安全</strong></td><td>AI 系統在整個生命週期應具備安全性和韌性</td></tr>
+        <tr><td><strong>5. 問責制</strong></td><td>AI 行為者應對 AI 系統的正常運作負責</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">8.2</span>歐盟 AI 法案（EU AI Act，2024）</div>
+    <p class="prose">世界首部全面性的 AI 法律，採用<strong>風險分級監管</strong>方式，依 AI 應用風險程度施以不同程度的法規管制：</p>
+    <div class="ai-spectrum" style="border-color:var(--gov-border)">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink4);margin-bottom:12px">EU AI ACT — RISK-BASED APPROACH</div>
+      <div class="spectrum-bar">
+        <div class="spec-seg" style="background:#3a3a3a;flex:1">禁止<br>Prohibited</div>
+        <div class="spec-seg" style="background:var(--gov);flex:2">高風險<br>High Risk</div>
+        <div class="spec-seg" style="background:var(--aidef);flex:2">有限風險<br>Limited Risk</div>
+        <div class="spec-seg" style="background:var(--priv);flex:3">最低風險<br>Minimal Risk</div>
+      </div>
+    </div>
+    <table class="tbl" style="margin-top:14px">
+      <thead><tr><th class="gov-h">風險等級</th><th class="gov-h">說明</th><th class="gov-h">範例</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#1a1a1a">🚫 禁止（Prohibited）</strong></td>
+          <td>明令禁止，不得使用</td>
+          <td>社會信用評分系統；實時公共場所生物特徵辨識；潛意識操控；剝削弱勢族群</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--gov)">🔴 高風險（High Risk）</strong></td>
+          <td>需符合嚴格合規要求，進行風險評估、透明度、人工監督</td>
+          <td>AI 用於：招聘篩選、信貸評分、醫療診斷、自動駕駛、執法、移民申請</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--aidef)">🟡 有限風險（Limited Risk）</strong></td>
+          <td>須履行透明度義務（告知用戶是 AI）</td>
+          <td>聊天機器人、深偽內容（DeepFake）、情感識別系統</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--priv)">🟢 最低風險（Minimal Risk）</strong></td>
+          <td>無特別規範，鼓勵自願遵守行為準則</td>
+          <td>AI 遊戲、垃圾郵件過濾、推薦系統、AI 生產力工具</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="box crimson">
+      <div class="box-head">⚖️ EU AI Act 重要時間表</div>
+      <p>2024/08/01 正式生效 → 2025/02 禁止類規範生效 → 2025/08 通用目的 AI（GPAI）規範生效 → 2026/08 高風險系統規範全面生效</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">8.3</span>ISO/IEC 42001：AI 管理系統標準</div>
+    <p class="prose">ISO/IEC 42001（2023）是全球首個<strong>人工智慧管理系統（AIMS）</strong>的國際標準，類似 ISO 27001（資安管理）架構：</p>
+    <table class="tbl">
+      <thead><tr><th class="gov-h">面向</th><th class="gov-h">說明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>適用對象</strong></td><td>任何開發、提供或使用 AI 系統的組織（不限規模或產業）</td></tr>
+        <tr><td><strong>核心要求</strong></td><td>建立、實施、維護並持續改善 AI 管理系統（PDCA 循環）</td></tr>
+        <tr><td><strong>主要內容</strong></td><td>AI 政策制定、風險評估、目標設定、效能評量、持續改善</td></tr>
+        <tr><td><strong>與 ISO 27001 關係</strong></td><td>可整合於既有的 ISO 27001 管理體系，不重複建立架構</td></tr>
+        <tr><td><strong>認證</strong></td><td>第三方稽核認證，展示組織的負責任 AI 承諾</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--gov)">
+    <div class="quiz-title">章節測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">Q1</span>
+        根據歐盟 AI 法案（EU AI Act），下列哪種 AI 應用屬於「高風險（High Risk）」類別？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','AI 遊戲屬於最低風險類別，娛樂用途不涉及重大個人權益。')"><span class="opt-l">A</span>AI 電玩遊戲的 NPC 對話</div>
+        <div class="q-opt" onclick="answer(this,'wrong','垃圾郵件過濾屬於最低風險，對個人影響有限且可逆。')"><span class="opt-l">B</span>電子郵件垃圾郵件過濾</div>
+        <div class="q-opt" onclick="answer(this,'correct','AI 用於信貸評分（貸款審核）屬於 EU AI Act 明確列舉的高風險 AI 應用，因為它直接影響個人的重要經濟權益（能否取得融資），且決策難以人工核查。需要符合嚴格的透明度、可解釋性、資料品質和人工監督要求。')"><span class="opt-l">C</span>AI 系統用於銀行貸款信用評分</div>
+        <div class="q-opt" onclick="answer(this,'wrong','音樂推薦屬於有限風險或最低風險，無重大個人影響。')"><span class="opt-l">D</span>音樂串流平台的個人化推薦</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">Q2</span>
+        ISO/IEC 42001 標準主要規範的是什麼？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','AI 演算法的技術規格（如精確度要求）不是 ISO 42001 的範疇，那屬於技術標準。')"><span class="opt-l">A</span>AI 演算法的技術精確度要求</div>
+        <div class="q-opt" onclick="answer(this,'wrong','個資保護有專門的 ISO 27701 和各地法規，ISO 42001 聚焦在 AI 管理而非個資。')"><span class="opt-l">B</span>AI 系統中個人資料的保護方式</div>
+        <div class="q-opt" onclick="answer(this,'correct','ISO/IEC 42001（2023）是全球首個 AI 管理系統（AIMS）國際標準，規範組織如何建立、實施、維護和持續改善人工智慧管理系統。類似於 ISO 27001 規範資安管理，ISO 42001 規範組織的負責任 AI 管理實踐，包含 AI 政策、風險評估、目標設定和持續改善（PDCA）。')"><span class="opt-l">C</span>組織建立與維護 AI 管理系統（AIMS）的要求</div>
+        <div class="q-opt" onclick="answer(this,'wrong','AI 硬體效能規格不在 ISO 42001 的範疇。')"><span class="opt-l">D</span>AI 硬體的效能規格與測試標準</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(7)">← AI 治理原則</button>
+    <button class="btn btn-crimson" onclick="gotoChapter(9)">下一章：台灣 AI 政策 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CH9 — 台灣 AI 政策與速查
+     ═══════════════════════════ -->
+<div class="chapter" id="ch9" style="--subject-color:var(--gov)">
+  <div class="ch-header">
+    <div class="ch-eyebrow" style="color:var(--gov)"><span class="e-bar" style="background:var(--gov)"></span>AI 治理概念 · Chapter 09</div>
+    <h2 class="ch-title">台灣 AI 政策<br>與考試重點速查</h2>
+    <p class="ch-desc">台灣的 AI 發展政策、IPAS 考試的必考概念彙整，以及三大主題的綜合複習測驗。</p>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">9.1</span>台灣 AI 治理現況</div>
+    <table class="tbl">
+      <thead><tr><th class="gov-h">政策/文件</th><th class="gov-h">內容重點</th></tr></thead>
+      <tbody>
+        <tr><td><strong>台灣 AI 行動計畫 2.0</strong></td><td>聚焦 AI 基礎設施建置（算力）、AI 人才培育、AI 應用推動；IPAS 認證即為人才培育的一環</td></tr>
+        <tr><td><strong>行政院 AI 使用指引</strong></td><td>規範政府機關使用生成式 AI 的原則，包含人工審查、資料保護、著作權注意事項</td></tr>
+        <tr><td><strong>數位部 AI 政策</strong></td><td>推動 AI 治理架構，參考 OECD 及歐盟框架制定本土指引</td></tr>
+        <tr><td><strong>個資法修正方向</strong></td><td>朝向 GDPR 對齊，加強 AI 自動決策的透明度要求、強化罰則</td></tr>
+        <tr><td><strong>資通安全管理法</strong></td><td>要求政府機關與關鍵基礎設施進行資安風險管理，AI 系統亦納入範疇</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-h"><span class="sec-h-num">9.2</span>🚨 三主題綜合速查表（Top 考點）</div>
+    <div class="sub-h">資料隱私與安全</div>
+    <table class="tbl">
+      <thead><tr><th class="priv-h">考點</th><th class="priv-h">答案</th></tr></thead>
+      <tbody>
+        <tr><td>GDPR 資料外洩通報時限</td><td><strong>72 小時</strong>內通報主管機關</td></tr>
+        <tr><td>GDPR 最高罰款</td><td>全球年營業額 <strong>4%</strong> 或 <strong>2,000 萬歐元</strong>，取較高值</td></tr>
+        <tr><td>個資法特種個資定義</td><td>病歷、醫療、<strong>基因</strong>、性生活、健康檢查、<strong>犯罪前科</strong></td></tr>
+        <tr><td>差分隱私 ε 越小代表</td><td>隱私保護<strong>越強</strong>，準確性越低</td></tr>
+        <tr><td>聯邦學習的核心優勢</td><td>原始資料<strong>不離開本地</strong>，只傳輸梯度/參數更新</td></tr>
+        <tr><td>k-匿名的意義</td><td>每筆記錄至少與 <strong>k-1 筆</strong>紀錄在準識別符上無法區分</td></tr>
+        <tr><td>CIA 三元組</td><td><strong>機密性</strong>（Confidentiality）、<strong>完整性</strong>（Integrity）、<strong>可用性</strong>（Availability）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-h">AI 的定義與分類</div>
+    <table class="tbl">
+      <thead><tr><th class="aidef-h">考點</th><th class="aidef-h">答案</th></tr></thead>
+      <tbody>
+        <tr><td>AI 命名時間與場合</td><td><strong>1956 年達特茅斯會議</strong>，John McCarthy 提出</td></tr>
+        <tr><td>所有現有 AI 的分類</td><td>均屬 <strong>ANI（弱人工智慧/窄域 AI）</strong></td></tr>
+        <tr><td>Transformer 核心機制</td><td><strong>自注意力機制（Self-Attention）</strong></td></tr>
+        <tr><td>AI ⊇ ML 的關係</td><td>AI ⊇ 機器學習（ML）⊇ 深度學習（DL）⊇ 生成式 AI</td></tr>
+        <tr><td>LLM 幻覺的定義</td><td>生成看似合理但<strong>實際錯誤或編造</strong>的資訊</td></tr>
+        <tr><td>GAN 是什麼</td><td><strong>對抗生成網路</strong>，生成器與判別器相互對抗訓練</td></tr>
+        <tr><td>中文房間論證目的</td><td>反駁「通過圖靈測試=真正理解語言/具有意識」的強 AI 論點</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-h">AI 治理概念</div>
+    <table class="tbl">
+      <thead><tr><th class="gov-h">考點</th><th class="gov-h">答案</th></tr></thead>
+      <tbody>
+        <tr><td>EU AI Act 風險分級</td><td>禁止 → <strong>高風險</strong> → <strong>有限風險</strong> → 最低風險</td></tr>
+        <tr><td>EU AI Act 高風險範例</td><td>信貸評分、招聘篩選、醫療診斷、執法、移民審查</td></tr>
+        <tr><td>EU AI Act 禁止類範例</td><td><strong>社會信用評分系統</strong>、實時公共場所生物辨識</td></tr>
+        <tr><td>ISO/IEC 42001 主題</td><td>AI <strong>管理系統（AIMS）</strong>國際標準（2023）</td></tr>
+        <tr><td>SHAP 的理論基礎</td><td><strong>合作博弈論</strong>中的 Shapley 值</td></tr>
+        <tr><td>負責任 AI 七大原則</td><td>透明性、可解釋性、<strong>公平性</strong>、<strong>問責制</strong>、隱私安全、可靠性、<strong>以人為本</strong></td></tr>
+        <tr><td>Human-in-the-loop 意義</td><td>在 AI 決策過程中保留<strong>人類最終控制與監督</strong>的機制</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-wrap" style="--subject-color:var(--gov)">
+    <div class="quiz-title">🎯 綜合複習測驗</div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">綜合 Q1</span>
+        某醫院 AI 診斷系統的錯誤率，在亞裔患者（12%）與白人患者（4%）間差異顯著，這違反了負責任 AI 的哪個原則，以及最符合哪種偏見類型？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','問責制是關於誰應負責，透明性是關於是否公開。但診斷差異的根本問題是不同族群的準確率不同。')"><span class="opt-l">A</span>問責制問題；演算法設計偏見</div>
+        <div class="q-opt" onclick="answer(this,'correct','跨族群的顯著準確率差異直接違反公平性（Fairness）原則——AI 對不同人口族群提供差異化品質的服務。其根源最可能是資料偏見（Data Bias）：醫療 AI 訓練資料中亞裔患者的樣本不足，導致模型對此族群的泛化能力較差。這是醫療 AI 的重大倫理問題。')"><span class="opt-l">B</span>公平性問題；資料偏見（Data Bias）</div>
+        <div class="q-opt" onclick="answer(this,'wrong','可解釋性是關於能否理解決策，不是描述跨族群差異的核心問題。')"><span class="opt-l">C</span>可解釋性問題；評量偏見</div>
+        <div class="q-opt" onclick="answer(this,'wrong','可靠性是關於系統穩定性，整體準確率差異不是可靠性問題的核心描述。')"><span class="opt-l">D</span>可靠性問題；互動偏見</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">綜合 Q2</span>
+        企業想在多國雲端環境部署員工績效評估 AI 系統，須同時考量哪些合規要求？（多重考量）
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','只考量台灣個資法不夠完整，如果有歐洲員工就須符合 GDPR，且員工績效評估在 EU AI Act 屬於高風險應用。')"><span class="opt-l">A</span>僅需符合台灣個人資料保護法</div>
+        <div class="q-opt" onclick="answer(this,'correct','正確的多面向合規考量：①若有 EU 員工資料，須符合 GDPR（包含 DPO 設置評估、資料可攜、被遺忘權）；②員工績效評估屬於 EU AI Act「高風險」類別，需透明度、人工監督機制；③台灣個資法規範員工個資的蒐集目的；④ISO 42001 AI 管理系統可作為整體治理框架。一個跨國 AI 系統需要同時符合多個法規體系。')"><span class="opt-l">B</span>需考量 GDPR、EU AI Act（高風險）、台灣個資法，及 ISO 42001 管理框架</div>
+        <div class="q-opt" onclick="answer(this,'wrong','ISO 42001 是管理框架，但忽略了法律強制要求（GDPR、EU AI Act）是不夠的。')"><span class="opt-l">C</span>只需遵循 ISO/IEC 42001 即可</div>
+        <div class="q-opt" onclick="answer(this,'wrong','GDPR 雖然重要，但部署在多國環境還需考量 EU AI Act 的風險分級要求及當地法規。')"><span class="opt-l">D</span>只需符合 GDPR 即可</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+    <div class="qblock">
+      <div class="q-text"><span class="q-badge" style="background:var(--gov-bg);color:var(--gov);border:1px solid var(--gov-border)">綜合 Q3</span>
+        下列何者不屬於 EU AI Act 明確禁止的 AI 應用？
+      </div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="answer(this,'wrong','政府使用 AI 為公民建立社會信用評分系統，是 EU AI Act 明確禁止的應用之一，因為它嚴重侵害人權與尊嚴。')"><span class="opt-l">A</span>政府對全體公民建立 AI 社會信用評分系統</div>
+        <div class="q-opt" onclick="answer(this,'wrong','在公共空間進行即時的 AI 人臉辨識是被禁止的（極少數安全例外除外，且須獲授權）。')"><span class="opt-l">B</span>在公共場所對不特定人群進行即時 AI 生物特徵辨識</div>
+        <div class="q-opt" onclick="answer(this,'correct','AI 驅動的客服聊天機器人屬於「有限風險」類別（需告知用戶在與 AI 互動），而非被禁止的類別。它不涉及操控或剝削，只需透明度義務。注意：有限風險 ≠ 禁止。')"><span class="opt-l">C</span>電商網站的 AI 客服聊天機器人</div>
+        <div class="q-opt" onclick="answer(this,'wrong','利用 AI 潛意識操控（如低於意識知覺的訊息）影響人類行為決策，是明確被禁止的。')"><span class="opt-l">D</span>利用 AI 進行潛意識操控影響消費者決策</div>
+      </div>
+      <div class="q-exp"></div>
+    </div>
+  </div>
+
+  <div class="box neutral" style="margin-top:40px;text-align:center;padding:24px">
+    <div style="font-family:var(--serif);font-size:22px;font-weight:700;margin-bottom:10px">🎓 恭喜完成全部章節！</div>
+    <p style="color:var(--ink3);font-size:14px">三大主題已全部學習完畢。建議搭配「資料處理」與「機器學習」教材一起複習，完整準備 IPAS 115 年度初級認證考試。</p>
+  </div>
+
+  <div class="ch-nav">
+    <button class="btn btn-outline" onclick="gotoChapter(8)">← 國際框架</button>
+    <button class="btn btn-crimson" onclick="gotoChapter(0)">✓ 返回總覽</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- ══════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════ -->
+<script>
+let cur = 0;
+const TOTAL = 10;
+const visited = new Set([0]);
+
+const colorMap = ['neutral','teal','teal','teal','amber','amber','amber','crimson','crimson','crimson'];
+
+function gotoChapter(n) {
+  document.getElementById('ch' + cur).classList.remove('active');
+  document.getElementById('nav' + cur).classList.remove('active');
+  if (n !== cur) document.getElementById('nav' + cur).classList.add('done');
+
+  document.getElementById('ch' + n).classList.add('active');
+  document.getElementById('nav' + n).classList.add('active');
+  cur = n;
+  visited.add(n);
+
+  document.getElementById('mainScroll').scrollTo({ top: 0, behavior: 'smooth' });
+  updateProg();
+}
+
+function updateProg() {
+  const pct = Math.round((visited.size / TOTAL) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('pctNum').textContent = pct + '%';
+}
+
+function answer(el, result, explanation) {
+  const group = el.parentElement;
+  if (group.querySelector('.disabled')) return;
+
+  const opts = group.querySelectorAll('.q-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+
+  const expDiv = el.closest('.qblock').querySelector('.q-exp');
+
+  if (result === 'correct') {
+    el.classList.add('correct');
+    expDiv.className = 'q-exp ok show';
+    expDiv.innerHTML = '<strong>✅ 正確！</strong> ' + explanation;
+  } else {
+    el.classList.add('wrong');
+    expDiv.className = 'q-exp ng show';
+    expDiv.innerHTML = '<strong>❌ 再想想。</strong> ' + explanation;
+    opts.forEach(o => {
+      const oc = o.getAttribute('onclick') || '';
+      if (oc.includes("'correct'")) o.classList.add('correct');
+    });
+  }
+}
+
+window.addEventListener('load', () => setTimeout(updateProg, 200));
+</script>
+</body>
+</html>
